@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Sales</p>
+    <h1>Orders</h1>
+    <p class="lead">A JOIN report connecting buyers, orders, order items, games, and sold keys.</p>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>User</th>
+          <th>Game</th>
+          <th>Key</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.order_id }}</td>
+          <td>{{ order.username }}</td>
+          <td>{{ order.gamename }}</td>
+          <td><code>{{ order.game_key }}</code></td>
+          <td>{{ "%.2f"|format(order.price) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

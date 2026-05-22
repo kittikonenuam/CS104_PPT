@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Mini Project Database App</p>
+    <h1>Game key sales dashboard</h1>
+    <p class="lead">Shows live SQLite data joined from games, categories, platforms, game keys, orders, and users.</p>
+  </div>
+  <div class="hero-actions">
+    <a class="button primary" href="{{ url_for('new_game') }}">Add demo game</a>
+    <form method="post" action="{{ url_for('reset_demo') }}">
+      <button class="button glass" type="submit">Reset demo data</button>
+    </form>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <article>
+    <span>Total games</span>
+    <strong>{{ stats.games }}</strong>
+  </article>
+  <article>
+    <span>Total users</span>
+    <strong>{{ stats.users }}</strong>
+  </article>
+  <article>
+    <span>Total orders</span>
+    <strong>{{ stats.orders }}</strong>
+  </article>
+  <article>
+    <span>Revenue</span>
+    <strong>{{ "%.2f"|format(stats.revenue) }}</strong>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="section-title">
+    <div>
+      <h2>JOIN view: catalog stock</h2>
+      <p>games + categories + platforms + game_keys</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Game</th>
+          <th>Category</th>
+          <th>Platform</th>
+          <th>Price</th>
+          <th>Available keys</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for game in games %}
+        <tr>
+          <td>{{ game.game_id }}</td>
+          <td>{{ game.gamename }}</td>
+          <td>{{ game.category }}</td>
+          <td>{{ game.platform }}</td>
+          <td>{{ "%.2f"|format(game.price) }}</td>
+          <td>{{ game.available_keys }}/{{ game.total_keys }}</td>
+          <td><span class="status">{{ game.status }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="section-title">
+    <div>
+      <h2>Recent orders</h2>
+      <p>orders + users + order_items + games + game_keys</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>User</th>
+          <th>Game</th>
+          <th>Sold key</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in recent_orders %}
+        <tr>
+          <td>{{ order.order_id }}</td>
+          <td>{{ order.username }}</td>
+          <td>{{ order.gamename }}</td>
+          <td><code>{{ order.game_key }}</code></td>
+          <td>{{ "%.2f"|format(order.price) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

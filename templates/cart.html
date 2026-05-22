@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Shopping Cart</p>
+    <h1>Your cart</h1>
+    <p class="lead">Checkout creates one order and many order_items, so this shows the 1:M relationship in the database.</p>
+  </div>
+  {% if rows %}
+    <form method="post" action="{{ url_for('clear_cart') }}">
+      <button class="button" type="submit">Clear cart</button>
+    </form>
+  {% endif %}
+</section>
+
+{% if rows %}
+  <section class="cart-layout">
+    <div class="panel">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Game</th>
+              <th>Platform</th>
+              <th>Qty</th>
+              <th>Available</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+              <tr>
+                <td>{{ row.game.gamename }}</td>
+                <td>{{ row.game.platform }}</td>
+                <td>{{ row.quantity }}</td>
+                <td>{{ row.game.available_keys }}</td>
+                <td>{{ "%.2f"|format(row.game.price) }} THB</td>
+                <td>{{ "%.2f"|format(row.line_total) }} THB</td>
+                <td>
+                  <form method="post" action="{{ url_for('remove_from_cart', game_id=row.game.game_id) }}">
+                    <button class="button small danger" type="submit">Remove</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="checkout-box">
+      <h2>Checkout</h2>
+      <p class="lead">Order total: <strong>{{ "%.2f"|format(total) }} THB</strong></p>
+      <form method="post" action="{{ url_for('checkout_cart') }}">
+        <label>
+          Buyer account
+          <select name="user_id" required>
+            {% for user in users %}
+              <option value="{{ user.user_id }}">{{ user.username }} &middot; {{ user.email }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <button class="button primary full" type="submit">Checkout cart</button>
+      </form>
+    </aside>
+  </section>
+{% else %}
+  <section class="empty-state">
+    <h2>Your cart is empty</h2>
+    <p>Add games from the store to create one order with multiple items.</p>
+    <a class="button primary" href="{{ url_for('store') }}">Browse store</a>
+  </section>
+{% endif %}
+{% endblock %}

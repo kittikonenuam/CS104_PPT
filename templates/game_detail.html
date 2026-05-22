@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="product-layout">
+  {% if game.image %}
+    <img class="product-image" src="{{ url_for('static', filename=game.image) }}" alt="{{ game.gamename }} cover">
+  {% else %}
+    <div class="product-cover cover-{{ (game.game_id[-1:]|int) % 5 }}">
+      <span>{{ game.gamename[:2].upper() }}</span>
+    </div>
+  {% endif %}
+
+  <div class="product-info">
+    <p class="eyebrow">{{ game.category }} &middot; {{ game.platform }}</p>
+    <h1>{{ game.gamename }}</h1>
+    <p class="lead">{{ game.description }}</p>
+    <div class="product-meta">
+      <article>
+        <span>Price</span>
+        <strong>{{ "%.2f"|format(game.price) }} THB</strong>
+      </article>
+      <article>
+        <span>Available keys</span>
+        <strong>{{ game.available_keys }}</strong>
+      </article>
+      <article>
+        <span>Delivery</span>
+        <strong>Instant reveal</strong>
+      </article>
+    </div>
+
+    <section class="checkout-box">
+      <div class="section-title compact">
+        <div>
+          <h2>Buy this game</h2>
+          <p>Add it to the cart for multi-game orders, or buy only this item immediately.</p>
+        </div>
+      </div>
+      {% if game.available_keys %}
+        <form method="post" action="{{ url_for('add_to_cart', game_id=game.game_id) }}">
+          <input type="hidden" name="next" value="{{ url_for('cart') }}">
+          <button class="button primary full" type="submit">Add to cart</button>
+        </form>
+        <hr class="soft-rule">
+        <form method="post" action="{{ url_for('checkout', game_id=game.game_id) }}">
+          <label>
+            Buyer account
+            <select name="user_id" required>
+              {% for user in users %}
+                <option value="{{ user.user_id }}">{{ user.username }} &middot; {{ user.email }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <button class="button primary full" type="submit">Buy and reveal key</button>
+        </form>
+      {% else %}
+        <p>This game is out of stock. Login as admin and reset demo data to sell it again.</p>
+      {% endif %}
+    </section>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="section-title">
+    <div>
+      <h2>Stock records</h2>
+      <p>These rows come from the game_keys table. The real key value is hidden until checkout.</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Key ID</th>
+          <th>Sold</th>
+          <th>Sold date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key in keys %}
+          <tr>
+            <td>{{ key.key_id }}</td>
+            <td>{{ "Yes" if key.sold else "No" }}</td>
+            <td>{{ key.sold_date or "-" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

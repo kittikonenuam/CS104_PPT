@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">CRUD Demo</p>
+    <h1>{{ title }}</h1>
+    <p class="lead">{{ "Update an existing game row." if game else "Insert a new game row into the database." }}</p>
+  </div>
+</section>
+
+<section class="form-panel">
+  <form method="post" enctype="multipart/form-data">
+    <label>
+      Game name
+      <input name="gamename" required value="{{ game.gamename if game else '' }}">
+    </label>
+
+    <label>
+      Description
+      <textarea name="description" rows="4">{{ game.description if game else '' }}</textarea>
+    </label>
+
+    <label>
+      Price
+      <input name="price" type="number" min="0" step="0.01" required value="{{ game.price if game else '' }}">
+    </label>
+
+    <label>
+      Upload cover image
+      <input name="image_file" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+    </label>
+
+    <label>
+      Image path
+      <input name="image" value="{{ game.image if game else '' }}" placeholder="uploads/example.jpg">
+    </label>
+
+    {% if game and game.image %}
+      <div class="image-preview">
+        <span>Current image</span>
+        <img src="{{ url_for('static', filename=game.image) }}" alt="{{ game.gamename }} cover">
+      </div>
+    {% endif %}
+
+    <label>
+      Status
+      <select name="status">
+        {% set current = game.status if game else 'active' %}
+        <option value="active" {{ "selected" if current == "active" else "" }}>active</option>
+        <option value="inactive" {{ "selected" if current == "inactive" else "" }}>inactive</option>
+        <option value="coming soon" {{ "selected" if current == "coming soon" else "" }}>coming soon</option>
+      </select>
+    </label>
+
+    <div class="form-actions">
+      <a class="button" href="{{ url_for('games') }}">Cancel</a>
+      <button class="button primary" type="submit">Save</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

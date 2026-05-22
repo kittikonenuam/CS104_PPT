@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="receipt">
+  <p class="eyebrow">Purchase Complete</p>
+  <h1>Your game key is ready</h1>
+  <p class="lead">This is a demo checkout, but the database really created an order, order item, and marked the key as sold.</p>
+
+  <div class="receipt-items">
+    {% for item in items %}
+      <div class="key-reveal">
+        <span>{{ item.gamename }} activation key</span>
+        <code>{{ item.game_key }}</code>
+        <small>{{ "%.2f"|format(item.price) }} THB</small>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="receipt-grid">
+    <article>
+      <span>Order</span>
+      <strong>{{ order.order_id }}</strong>
+    </article>
+    <article>
+      <span>Buyer</span>
+      <strong>{{ order.username }}</strong>
+    </article>
+    <article>
+      <span>Items</span>
+      <strong>{{ items|length }}</strong>
+    </article>
+    <article>
+      <span>Total</span>
+      <strong>{{ "%.2f"|format(order.total_price) }} THB</strong>
+    </article>
+  </div>
+
+  <div class="hero-actions">
+    <a class="button primary" href="{{ url_for('store') }}">Back to store</a>
+    {% if is_admin %}
+      <a class="button" href="{{ url_for('orders') }}">View admin orders</a>
+    {% else %}
+      <a class="button" href="{{ url_for('login', next=url_for('orders')) }}">Admin order report</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

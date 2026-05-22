@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Inventory</p>
+    <h1>Game keys</h1>
+    <p class="lead">Each key belongs to one game. Sold keys are connected to order_items.</p>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Key ID</th>
+          <th>Game</th>
+          <th>Game key</th>
+          <th>Sold</th>
+          <th>Sold date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key in keys %}
+        <tr>
+          <td>{{ key.key_id }}</td>
+          <td>{{ key.gamename }}</td>
+          <td><code>{{ key.game_key }}</code></td>
+          <td>{{ "Yes" if key.sold else "No" }}</td>
+          <td>{{ key.sold_date or "-" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

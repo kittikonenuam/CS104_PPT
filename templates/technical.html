@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Report Helper</p>
+    <h1>Technical log</h1>
+    <p class="lead">Use this page for the report and the AI/code adaptation part of the video.</p>
+  </div>
+</section>
+
+<section class="two-column">
+  <article class="panel">
+    <div class="section-title">
+      <div>
+        <h2>Record counts</h2>
+        <p>Every table has at least 10 records in the seed data.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Table</th>
+            <th>Records</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in table_counts %}
+          <tr>
+            <td>{{ row.table_name }}</td>
+            <td>{{ row.records }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="section-title">
+      <div>
+        <h2>Design rationale</h2>
+        <p>Short explanation for the presentation.</p>
+      </div>
+    </div>
+    <ul class="notes">
+      <li><strong>games</strong> stores the product shown to customers.</li>
+      <li><strong>game_keys</strong> separates real stock keys from game details.</li>
+      <li><strong>orders</strong> and <strong>order_items</strong> support one order with one or more games.</li>
+      <li><strong>categories</strong> and <strong>platforms</strong> avoid repeated text and support filtering.</li>
+      <li><strong>UNIQUE</strong> on email and game_key prevents duplicate users and duplicate activation keys.</li>
+    </ul>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="section-title">
+    <div>
+      <h2>SQL JOIN snippet</h2>
+      <p>Dashboard query used to show game stock with category and platform.</p>
+    </div>
+  </div>
+  <pre><code>SELECT
+  g.game_id,
+  g.gamename,
+  g.price,
+  COALESCE(c.cat_name, '-') AS category,
+  COALESCE(p.platform_name, '-') AS platform,
+  SUM(CASE WHEN k.sold = 0 THEN 1 ELSE 0 END) AS available_keys
+FROM games AS g
+LEFT JOIN game_categories AS gc ON g.game_id = gc.game_id
+LEFT JOIN categories AS c ON gc.category_id = c.category_id
+LEFT JOIN game_platforms AS gp ON g.game_id = gp.game_id
+LEFT JOIN platforms AS p ON gp.platform_id = p.platform_id
+LEFT JOIN game_keys AS k ON g.game_id = k.game_id
+GROUP BY g.game_id;</code></pre>
+</section>
+
+<section class="panel">
+  <div class="section-title">
+    <div>
+      <h2>AI prompt example</h2>
+      <p>Keep this for the AI usage section.</p>
+    </div>
+  </div>
+  <pre><code>Create a Flask web app for a CS104 SQLite database project about a game key store.
+Use the existing ERD tables: users, games, game_keys, orders, order_items, categories,
+game_categories, platforms, and game_platforms. Build a dashboard with SQL JOIN data
+and CRUD pages for games.</code></pre>
+</section>
+{% endblock %}

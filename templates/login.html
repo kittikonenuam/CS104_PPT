@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="login-layout">
+  <div>
+    <p class="eyebrow">Admin Access</p>
+    <h1>Manage the key store</h1>
+    <p class="lead">Login to open the dashboard, CRUD pages, key inventory, orders, and technical log.</p>
+  </div>
+
+  <section class="form-panel login-card">
+    <form method="post">
+      <label>
+        Username
+        <input name="username" value="admin" required>
+      </label>
+      <label>
+        Password
+        <input name="password" type="password" value="admin" required>
+      </label>
+      <button class="button primary full" type="submit">Login</button>
+    </form>
+    <p class="hint">Demo account: admin / admin</p>
+  </section>
+</section>
+{% endblock %}
